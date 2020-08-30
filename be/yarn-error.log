@@ -1,0 +1,50 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add cors
+
+PATH: 
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\AdoptOpenJDK\jre-8.0.212.03-hotspot\bin;C:\Program Files\AdoptOpenJDK\jre-11.0.3.7-hotspot\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;C:\Users\Usuario\AppData\Local\Programs\Python\Python38\Scripts\;C:\Users\Usuario\AppData\Local\Programs\Python\Python38\;C:\Users\Usuario\AppData\Local\Microsoft\WindowsApps;C:\Yan\Microsoft VS Code\bin;C:\Users\Usuario\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3.1\bin;C:\Program Files\Android\Skd\platform-tools;C:\Program Files\Android\Skd\tools;C:\Users\Usuario\AppData\Local\Yarn\bin;C:\Users\Usuario\AppData\Roaming\npm
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  12.18.3
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'C:\Yan\projects\Ecoleta\be\node_modules\sqlite3\lib\binding\napi-v3-win32-x64\node_sqlite3.node'
+
+npm manifest: 
+  {
+    "name": "be",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "dev": "ts-node-dev --ignore-watch node_modules src/Server.ts",
+      "knex:seed": "knex --knexfile DBConfig.ts seed:run",
+      "knex:migrate": "knex --knexfile dBConfig.ts migrate:latest"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "express": "^4.17.1",
+      "knex": "^0.21.2",
+      "sqlite3": "^5.0.0"
+    },
+    "devDependencies": {
+      "@types/express": "^4.17.7",
+      "ts-node": "^8.10.2",
+      "ts-node-dev": "^1.0.0-pre.56",
+      "typescript": "^3.9.7"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

@@ -1,0 +1,19 @@
+.header-container {
+    margin: 48px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-container a {
+    color: var(--title-color);
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+  
+.header-container a svg {
+    margin-right: 16px;
+    color: var(--primary-color);
+}
