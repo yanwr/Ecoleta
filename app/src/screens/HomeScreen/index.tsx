@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { IBGE_FORMATED } from '../../models/IbgeDTO';
+import { loadCitysByUF, loadUFs } from '../../apis/api-IBGE';
 import Logo from '../../assets/logo.png';
 import BgLogo from '../../assets/home-background.png';
 import { useNavigation } from '@react-navigation/native';
 import { View, ImageBackground, Image, StyleSheet, Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import IconComponent from '../../components/Icon';
+import PickerComponent from '../../components/PickerSelect';
 
 const HomeScreen = (props:any) => {
     const navigation = useNavigation();
+    const [ufs, setUfs] = useState<IBGE_FORMATED[] | any>([]);
+    const [cities, setCities] = useState<IBGE_FORMATED[] | any>([]);
+    const [ufSelected, setUfSelected] = useState('');
+    const [citySelected, setCitySelected] = useState('');
+
+    useEffect(() => {
+        loadUFs().then( 
+            res => { setUfs(res) },
+            e => { console.log('Erro to load UFS', e) }
+        );
+    }, []);
+
+    useEffect(() => {
+        if(ufSelected === '') { return };
+        loadCitysByUF(ufSelected).then( 
+            res => { setCities(res)},
+            e => { console.log('Error to load cities', e) }    
+        );
+    }, [ufSelected]);
+
+    function handleNavigateToPoints() {
+        console.log({ address_uf: ufSelected, address_city: citySelected })
+        navigation.navigate('point-screen', { address_uf: ufSelected, address_city: citySelected });
+    };
+
     return(
         <ImageBackground 
             source={BgLogo} 
@@ -20,9 +48,21 @@ const HomeScreen = (props:any) => {
                 <Text style={styles.description}>We help people find collection points efficiently.</Text>
             </View>
             <View style={styles.footer}>
+                <PickerComponent 
+                    datas={ufs}
+                    label={"Select your UF ..."}
+                    selectedValue={ufSelected}
+                    onChangeValue={(value) => setUfSelected(value)}
+                />
+                <PickerComponent 
+                    datas={cities}
+                    label={"Select your city ..."}
+                    selectedValue={citySelected}
+                    onChangeValue={(value) => setCitySelected(value)}
+                />
                 <RectButton 
                     style={styles.button}
-                    onPress={() => navigation.navigate('point-screen')}
+                    onPress={handleNavigateToPoints}
                 >
                     <View style={styles.buttonIcon}>
                         <IconComponent name={"arrow-right"} color={"#FFF"} size={24} />
@@ -61,15 +101,6 @@ const styles = StyleSheet.create({
         lineHeight: 24,
     },
     footer: {},
-    select: {},
-    input: {
-        height: 60,
-        backgroundColor: '#FFF',
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 24,
-        fontSize: 16,
-    },
     button: {
         backgroundColor: '#34CB79',
         height: 60,
@@ -82,6 +113,8 @@ const styles = StyleSheet.create({
     buttonIcon: {
         height: 60,
         width: 60,
+        borderTopLeftRadius: 10,
+        borderBottomLeftRadius: 10,
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         justifyContent: 'center',
         alignItems: 'center'

@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { IBGE_UF_RESPONSE, IBGE_CITY_RESPONSE } from '../shared/models';
+import { IBGE_UF_RESPONSE, IBGE_CITY_RESPONSE } from '../models/IbgeDTO';
 
 const URLs = {
    UFs: "https://servicodados.ibge.gov.br/api/v1/localidades/estados",
@@ -14,12 +14,12 @@ export const loadUFs = async () => {
             return { id: data.id, value: data.sigla };
         });
         return ufInitials;
-    } catch (error) {
+    } catch (e) {
         return new Error("REQUEST FAIL");
     }
 };
 
-export const loadCitysByUFid = async (idUF:string) => {
+export const loadCitysByUF = async (idUF:string) => {
     try {
         const response = await Axios.get<IBGE_CITY_RESPONSE[]>(URLs.Citys(idUF));
         console.log(`Resquest to ${URLs.Citys(idUF)}. RESPONES: `, response);
@@ -27,7 +27,7 @@ export const loadCitysByUFid = async (idUF:string) => {
             return { id: data.id, value: data.nome };
         });
         return cities;
-    } catch (error) {
+    } catch (e) {
         return new Error("REQUEST FAIL");
     }
 };

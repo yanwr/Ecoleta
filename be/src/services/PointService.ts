@@ -2,30 +2,33 @@ import repository from '../database/RepositoryConnection';
 import {TABLE_NAME as POINT } from '../database/models/01_COLLECT_POINT';
 import { TABLE_NAME as POINT_ITEM } from '../database/models/03_COLLECT_POINT_ITEM';
 import { TABLE_NAME as ITEM } from '../database/models/02_COLLECT_ITEM';
+import { TABLE_NAME as USER } from '../database/models/00_USER';
 
 export default class PointService {
 
-    async index(filterPoints:number[], address_city:any, address_uf:any) {
+    async index(){
         try {
             const pointsFound = await repository(POINT)
                 .join(POINT_ITEM, `${POINT}.id`, "=", `${POINT_ITEM}.point_id`)
-                .whereIn(`${POINT_ITEM}.item_id`, filterPoints)
-                .where('address_city', String(address_city))
-                .where('address_uf', String(address_uf))
                 .distinct().select(`${POINT}.*`);
             return pointsFound;
         } catch (error) {
             
         }
-    };
+    }
 
     async show(id:string | number) {
         try {
             const point = await repository(POINT).where('id', id).first();
+            const user = await repository(POINT)
+                .join(USER, `${USER}.id`, '=', `${POINT}.user_id`)
+                .select([`${USER}.id`, `${USER}.name`, `${USER}.whatsapp`, `${USER}.email`])
+                .where(`${POINT}.id`, id)
+                .first();
             const itens = await repository(ITEM)
                 .join(POINT_ITEM, `${ITEM}.id`, '=', `${POINT_ITEM}.item_id`)
                 .where(`${POINT_ITEM}.point_id`, id).select(`${ITEM}.name`);
-            return {...point, itens };
+            return {...point, user, itens };
         } catch (error) {
             return {error: true};
         }

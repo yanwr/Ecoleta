@@ -1,4 +1,4 @@
-import APi from '../APis';
+import APi from '../apis';
 
 export async function loadItens() {
     console.log('Try to load whole itens');

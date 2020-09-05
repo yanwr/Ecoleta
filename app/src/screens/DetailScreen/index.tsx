@@ -1,37 +1,70 @@
-import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { View, StyleSheet, TouchableOpacity, Image, Text, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import Point from '../../models/Point';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import * as MailComposer from 'expo-mail-composer';
+import { loadOnePoint } from '../../services/PointService';
+import { View, StyleSheet, TouchableOpacity, Image, Text,
+  SafeAreaView, Linking  } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import IconComponent from '../../components/Icon';
 
+interface StateNavigation {
+  id:number;
+}
+
 const DetailScreen = () => {
-    const navigation = useNavigation();
-    return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <TouchableOpacity onPress={() => navigation.goBack() }>
-                    <IconComponent name={"arrow-left"} color={"#34cb79"} size={20} />
-                </TouchableOpacity>
-                <Image style={styles.pointImage} source={{ uri: "https://images.unsplash.com/photo-1593642532400-2682810df593?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=40"}}/>
-                <Text style={styles.pointName}>Shop Computer</Text>
-                <Text style={styles.pointItems}>Light, oils</Text>
-                <View style={styles.address}>
-                    <Text style={styles.addressTitle}>Address</Text>
-                    <Text style={styles.addressContent}>SC</Text>
-                </View>
-            </View>
-            <View style={styles.footer}>
-                <RectButton style={styles.button} onPress={() => {}} >
-                    <IconComponent name={"whatsapp"} color={"#FFF"} size={20} />
-                    <Text style={styles.buttonText}>Whatsapp</Text>
-                </RectButton>
-                <RectButton style={styles.button} onPress={() => {}}>
-                    <IconComponent name={"envelope"} color={"#FFF"} size={20} />
-                    <Text style={styles.buttonText}>E-mail</Text>
-                </RectButton>
-            </View>
-        </SafeAreaView>
+  const navigation = useNavigation();
+  const { id } = useRoute().params as StateNavigation;
+  const [point, setPoint] = useState<Point>({} as Point);
+
+  useEffect(() => {
+    loadOnePoint(id).then( res => 
+      setPoint(res)
     );
+  }, []);
+
+  function handleComposeWpp() {
+    Linking.openURL(`whatsapp://send?phone=${point.user.whatsapp}`);
+  };
+
+  function handleComposeEmail() {
+    MailComposer.composeAsync({
+      recipients: [point.email, point.user.email],
+      subject: 'I\'m interested in collecting',
+    });
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        { !point.itens 
+          ? <Text style={styles.pointName}>Please, hold on ...</Text>
+          : <>
+            <TouchableOpacity onPress={() => navigation.goBack() }>
+              <IconComponent name={"arrow-left"} color={"#34cb79"} size={20} />
+            </TouchableOpacity>
+            <Image style={styles.pointImage} source={{ uri: point.image}}/>
+            <Text style={styles.pointName}>{point.name}</Text>
+            <Text style={styles.pointItems}>{point.itens.map(item => (item.name)).join(', ')}</Text>
+            <View style={styles.address}>
+              <Text style={styles.addressTitle}>{point.address_city}, {point.address_number}</Text>
+              <Text style={styles.addressContent}>{point.address_uf}</Text>
+            </View> 
+          </>
+        }
+      </View>
+      <View style={styles.footer}>
+        <RectButton style={styles.button} onPress={handleComposeWpp} >
+          <IconComponent name={"whatsapp"} color={"#FFF"} size={20} />
+          <Text style={styles.buttonText}>Whatsapp</Text>
+        </RectButton>
+        <RectButton style={styles.button} onPress={handleComposeEmail}>
+          <IconComponent name={"envelope"} color={"#FFF"} size={20} />
+          <Text style={styles.buttonText}>E-mail</Text>
+        </RectButton>
+      </View>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({

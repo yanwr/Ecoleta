@@ -1,9 +1,11 @@
 import Express from 'express';
 import Path from 'path';
 import Cors from 'cors';
+
 import ItemRoutes from './routes/ItemRoutes';
 import UserRoutes from './routes/UserRoutes';
 import PointRoutes from './routes/PointRoutes';
+import PointItensRoutes from './routes/PointItemRoutes';
 
 const api = Express();
 
@@ -17,8 +19,6 @@ api.use('/upload', Express.static(
     )
 ));
 
-api.use(ItemRoutes);
-api.use(UserRoutes);
-api.use(PointRoutes);
+api.use(UserRoutes, PointItensRoutes, PointRoutes, ItemRoutes);
 
 api.listen(3333);

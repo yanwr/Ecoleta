@@ -1,4 +1,4 @@
-import APi from '../shared/APi';
+import APi from '../apis';
 
 export const loadItens = async () => {
     try {
