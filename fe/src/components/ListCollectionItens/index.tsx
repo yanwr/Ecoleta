@@ -1,6 +1,6 @@
 import React from 'react';
 import CollectionItemComponent from './CollectionItem';
-import { CollectionItem } from '../../shared/models';
+import { CollectionItem } from '../../models';
 
 interface ListCollectionItensProps {
     collectionItens:CollectionItem[],

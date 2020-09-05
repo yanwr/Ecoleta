@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker} from 'react-leaflet';
 import { loadItens } from '../../services/ItemService';
-import { loadUFs, loadCitysByUFid } from '../../services/IBGEService';
+import { loadUFs, loadCitysByUF } from '../../apis/api-IBGE';
 import { createPoint } from '../../services/PointService';
-import { CollectionItem, IBGE_FORMATED, CollectionPoint } from '../../shared/models';
+import { CollectionItem, IBGE_FORMATED, CollectionPoint } from '../../models';
 import { LeafletMouseEvent } from 'leaflet';
 import HeaderComponent from '../../components/Header';
 import ListCollectionItensComponent from '../../components/ListCollectionItens';
@@ -60,7 +60,7 @@ const RegisterPointPage:React.FC = () => {
        if(selectedUF === '0'){
             return;
        };
-       loadCitysByUFid(selectedUF).then(
+       loadCitysByUF(selectedUF).then(
            data => {
                 setCities(data);
            },

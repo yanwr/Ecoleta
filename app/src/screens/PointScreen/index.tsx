@@ -1,43 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import Item from '../../models/CollectionItem';
+import Point from '../../models/Point';
 import { loadItens } from '../../services/ItemService';
-import { useNavigation } from '@react-navigation/native';
+import { loadPoints } from '../../services/PointService';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import * as GeoLocation from 'expo-location';
 import { 
     View, StyleSheet, TouchableOpacity, 
-    Text, Image, SafeAreaView, Alert
+    Text, SafeAreaView, Alert
 } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import IconComponent from '../../components/Icon';
 import ListCollectionItem from '../../components/ListCollectionItens';
+import MapComponent from '../../components/MapComponent';
+
+interface StateNavigation {
+  address_uf: string;
+  address_city: string;
+}
 
 const PointScreen = (props:any) => {
     const navigation = useNavigation();
+    const { address_uf, address_city } = useRoute().params as StateNavigation;
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0, 0])
     const [itens, setItens] = useState<Item[]>([]);
     const [selectedItens, setSelectedItens] = useState<number[]>([]);
+    const [points, setPoints] = useState<Point[]>([]);
 
     useEffect(() => {
-        async function loadCurrentLocation() {
-            const { status } = await GeoLocation.requestPermissionsAsync();
-            if(status !== GeoLocation.PermissionStatus.GRANTED){
-                Alert.alert('Oooopss ...', 'I need your permission to get your current location.');
-                return;
-            }
-            const currentLocation = await GeoLocation.getCurrentPositionAsync();
-            const { latitude, longitude } = currentLocation.coords;
-            setInitialPosition([latitude, longitude]);
-        };
-        loadCurrentLocation();
+      async function loadCurrentLocation() {
+          const { status } = await GeoLocation.requestPermissionsAsync();
+          if(status !== GeoLocation.PermissionStatus.GRANTED){
+              Alert.alert('Oooopss ...', 'I need your permission to get your current location.');
+              return;
+          }
+          const currentLocation = await GeoLocation.getCurrentPositionAsync();
+          const { latitude, longitude } = currentLocation.coords;
+          setInitialPosition([latitude, longitude]);
+      };
+      loadCurrentLocation();
     }, []);
 
     useEffect(() => {
-        loadItens().then(res => setItens(res));
+      loadItens().then(res => setItens(res));
     }, []);
 
     useEffect(() => {
-        
-    }, []);
+      loadPoints({ address_uf, address_city, itens: selectedItens })
+        .then(res => setPoints(res));
+    }, [address_uf, address_city, selectedItens]);
 
     function handleSelectItem(itemId:number) {
         const alreadySelected = selectedItens.findIndex(id => id === itemId);
@@ -59,29 +69,10 @@ const PointScreen = (props:any) => {
                 <Text style={styles.description}>Find in map a collection point.</Text>
                 <View style={styles.mapContainer}>
                    { initialPosition[0] !== 0 && (
-                        <MapView 
-                            style={styles.map}
-                            initialRegion={{ 
-                                latitude: initialPosition[0], 
-                                longitude: initialPosition[1], 
-                                longitudeDelta: 0.014, 
-                                latitudeDelta: 0.014 
-                            }}
-                        >
-                            <Marker 
-                                style={styles.mapMarker}
-                                coordinate={{ latitude: -27.4671178, longitude: -48.4487568 }}
-                                onPress={() => navigation.navigate('detail-screen')}
-                            >
-                                <View style={styles.mapMarkerContainer}>
-                                    <Image 
-                                        style={styles.mapMarkerImage}
-                                        source={{ uri: "https://images.unsplash.com/photo-1593642532400-2682810df593?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=40" }}
-                                    />
-                                    <Text style={styles.mapMarkerTitle}>Shop Computer</Text>
-                                </View>
-                            </Marker>
-                        </MapView>
+                        <MapComponent 
+                            initialPosition={initialPosition}
+                            points={points}
+                        />
                    )}
                 </View>
             </View>
@@ -119,63 +110,10 @@ const styles = StyleSheet.create({
       overflow: 'hidden',
       marginTop: 16,
     },
-    map: {
-      width: '100%',
-      height: '100%',
-    },
-    mapMarker: {
-      width: 90,
-      height: 80, 
-    },
-    mapMarkerContainer: {
-      width: 90,
-      height: 70,
-      backgroundColor: '#34CB79',
-      flexDirection: 'column',
-      borderRadius: 8,
-      overflow: 'hidden',
-      alignItems: 'center'
-    },
-    mapMarkerImage: {
-      width: 90,
-      height: 45,
-      resizeMode: 'cover',
-    },
-    mapMarkerTitle: {
-      flex: 1,
-      fontFamily: 'Roboto_400Regular',
-      color: '#FFF',
-      fontSize: 13,
-      lineHeight: 23,
-    },
     itemsContainer: {
       flexDirection: 'row',
       marginTop: 16,
       marginBottom: 8,
-    },
-    item: {
-      backgroundColor: '#fff',
-      borderWidth: 2,
-      borderColor: '#eee',
-      height: 120,
-      width: 120,
-      borderRadius: 8,
-      paddingHorizontal: 16,
-      paddingTop: 20,
-      paddingBottom: 16,
-      marginRight: 8,
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      textAlign: 'center',
-    },
-    selectedItem: {
-      borderColor: '#34CB79',
-      borderWidth: 2,
-    },
-    itemTitle: {
-      fontFamily: 'Roboto_400Regular',
-      textAlign: 'center',
-      fontSize: 13,
     },
 });
 

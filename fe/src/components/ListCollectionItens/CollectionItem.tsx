@@ -1,5 +1,5 @@
 import React, { LiHTMLAttributes } from 'react';
-import { CollectionItem } from '../../shared/models';
+import { CollectionItem } from '../../models';
 
 interface CollectionItemProps extends LiHTMLAttributes<HTMLLIElement> {
     item: CollectionItem,

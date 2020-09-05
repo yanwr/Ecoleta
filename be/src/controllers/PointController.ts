@@ -6,16 +6,8 @@ const pointService = new PointServive();
 export default class PointController {
     
     async index(request: Request, response: Response){
-        try {
-            const { address_city, address_uf, itens } = request.query;
-            const parseItensToArray:number[] = String(itens)
-                .split(',')
-                .map(item => Number(item.trim()));
-            const pointsFound = await pointService.index(parseItensToArray, address_city, address_uf);
-            return response.json({ points: pointsFound});
-        } catch (error) {
-
-        }
+        const pointsFound = await pointService.index();
+        return response.json({ points: pointsFound});
     };
     
     async show(request: Request, response: Response){

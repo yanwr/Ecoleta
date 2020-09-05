@@ -1,5 +1,5 @@
 import React, { SelectHTMLAttributes } from 'react';
-import { IBGE_FORMATED } from '../../shared/models';
+import { IBGE_FORMATED } from '../../models';
 
 interface SelectInputProps extends SelectHTMLAttributes<HTMLSelectElement>  {
     datas:IBGE_FORMATED[],

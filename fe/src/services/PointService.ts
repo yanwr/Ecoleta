@@ -1,5 +1,5 @@
-import APi from '../shared/APi';
-import { CollectionPoint } from '../shared/models';
+import APi from '../apis';
+import { CollectionPoint } from '../models';
 
 export const createPoint = async (body:CollectionPoint) => {
     try {
