@@ -43,7 +43,7 @@ const DetailScreen = () => {
             <TouchableOpacity onPress={() => navigation.goBack() }>
               <IconComponent name={"arrow-left"} color={"#34cb79"} size={20} />
             </TouchableOpacity>
-            <Image style={styles.pointImage} source={{ uri: point.image}}/>
+            <Image style={styles.pointImage} source={{ uri: point.image_url}}/>
             <Text style={styles.pointName}>{point.name}</Text>
             <Text style={styles.pointItems}>{point.itens.map(item => (item.name)).join(', ')}</Text>
             <View style={styles.address}>

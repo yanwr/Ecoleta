@@ -11,6 +11,7 @@ import HeaderComponent from '../../components/Header';
 import ListCollectionItensComponent from '../../components/ListCollectionItens';
 import SelectComponent from '../../components/Select';
 import InputComponent from '../../components/Input';
+import DropZoneComponent from '../../components/DropZone';
 import './style.css';
 
 const RegisterPointPage:React.FC = () => {
@@ -22,6 +23,7 @@ const RegisterPointPage:React.FC = () => {
     const [selectedCity, setSelectedCity] = useState('');
     const [initialPosition, setInitialPosition] = useState<[number, number]>([0,0]);
     const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0,0]);
+    const [selectedFile, setSelectedFile] = useState<File>();
     const [number, setNumber] = useState('');
     const [entity, setEntity] = useState({
         name: '', email: ''
@@ -94,12 +96,10 @@ const RegisterPointPage:React.FC = () => {
 
     function handleCreatePoint(e:FormEvent) {
         e.preventDefault();
-        const image = "https://images.unsplash.com/photo-1593642532400-2682810df593?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=40";
         const data:CollectionPoint = {
             user_id: 1,
             email: entity.email,
             name: entity.name,
-            image,
             address_latitude: selectedPosition[0],
             address_longitude: selectedPosition[1],
             address_number: number,
@@ -107,14 +107,18 @@ const RegisterPointPage:React.FC = () => {
             address_uf: selectedUF,
             itens: selectedItens,
         };
-        createPoint(data).then(
-            response => {
-                alert(`Point save with success.`);
-            }, 
-            error => {
-                alert('Happened some error on time to create point, try again');
-            }
-        );
+        if(selectedFile){
+            createPoint(data, selectedFile).then(
+                response => {
+                    alert(`Point save with success.`);
+                }, 
+                error => {
+                    alert('Happened some error on time to create point, try again');
+                }
+            );
+        } else {
+            alert('I must have to put an image ...');
+        }
     }
     return(
         <div id="point-create-container">
@@ -149,6 +153,12 @@ const RegisterPointPage:React.FC = () => {
                                 onChange={handleInputChange}
                             /> 
                         </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>
+                            <h2>An image from your local</h2>
+                        </legend>
+                        <DropZoneComponent onSelectFile={setSelectedFile} />
                     </fieldset>
                     <fieldset>
                         <legend>

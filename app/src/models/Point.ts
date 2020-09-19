@@ -7,6 +7,7 @@ export default interface Point {
     name: string;
     email: string;
     image: string;
+    image_url:string;
     address_latitude: number;
     address_longitude: number;
     address_number: string;
