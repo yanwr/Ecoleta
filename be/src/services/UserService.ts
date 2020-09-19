@@ -7,10 +7,14 @@ export default class ItemService {
     async index() {};
 
     async show(userId:string) {
-        const currentUser:User[] = await repository(TABLE_NAME)
-                                .where('id', '=', userId)
-                                .select('*');
-        return currentUser;
+        try {
+            const currentUser:User[] = await repository(TABLE_NAME)
+                                        .where('id', '=', userId)
+                                        .select('*');
+            return currentUser;
+        } catch (e) {
+            
+        }
     };
 
     async store(user:User) {

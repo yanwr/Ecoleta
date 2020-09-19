@@ -11,47 +11,34 @@ export default class PointController {
     };
     
     async show(request: Request, response: Response){
-        try {
-            const { id } = request.params;
-            const point = await pointService.show(id);
-            if(!point){
-                return response.status(400).json({ message: `Point ${id} not found !`});
-            };
-            return response.json(point);
-        } catch (error) {
-            return response.json({ error: true });
-        }
+        const { id } = request.params;
+        const point = await pointService.show(id);
+        if(!point){
+            return response.status(400).json({ message: `Point ${id} not found !`});
+        };
+        return response.json(point);
     };
     
     async store(request: Request, response: Response){
-        try {
-            const { name, user_id, email, image, address_latitude, address_longitude,
-                address_number, address_city, address_uf, itens } = request.body;
-            const point = {
-                name,
-                user_id,
-                email,
-                image,
-                address_latitude,
-                address_longitude,
-                address_number,
-                address_city,
-                address_uf
-            };
-            const pointSaved = await pointService.store(point, itens);
-            return response.json(pointSaved);
-        } catch (error) {
-            console.log(error);
-            return response.status(400).json({ error: true})
-        }
+        const { name, user_id, email, image, address_latitude, address_longitude,
+            address_number, address_city, address_uf, itens } = request.body;
+        const point = {
+            name,
+            user_id,
+            email,
+            image,
+            address_latitude,
+            address_longitude,
+            address_number,
+            address_city,
+            address_uf
+        };
+        const pointSaved = await pointService.store(point, itens);
+        return response.json(pointSaved);
     };
 
     async storeImage(request:Request, response:Response) {
-        try{
-            const { filename } = request.file;
-            return response.status(201).send(filename);
-        } catch (e) {
-            return response.status(404).send({error: true });
-        }
+        const { filename } = request.file;
+        return response.status(201).send(filename);
     };
 }
