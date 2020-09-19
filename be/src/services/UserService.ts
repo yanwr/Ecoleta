@@ -1,6 +1,6 @@
 import repository from '../database/RepositoryConnection';
 import { TABLE_NAME } from '../database/models/00_USER';
-import {User} from '../models/User';
+import User from '../models/User';
 
 export default class ItemService {
 
@@ -8,8 +8,8 @@ export default class ItemService {
 
     async show(userId:string) {
         const currentUser:User[] = await repository(TABLE_NAME)
-                                            .where('id', '=', userId)
-                                            .select('*');
+                                .where('id', '=', userId)
+                                .select('*');
         return currentUser;
     };
 

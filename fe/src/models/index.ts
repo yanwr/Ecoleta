@@ -23,7 +23,7 @@ export interface CollectionPoint {
     user_id: number,
     email: string,
     name: string,
-    image: string,
+    image?: string,
     address_latitude: number,
     address_longitude: number,
     address_number: string,

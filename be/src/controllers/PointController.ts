@@ -39,27 +39,19 @@ export default class PointController {
                 address_uf
             };
             const pointSaved = await pointService.store(point, itens);
-    
             return response.json(pointSaved);
         } catch (error) {
             console.log(error);
-            return response.status(400).json({ error: error})
+            return response.status(400).json({ error: true})
         }
     };
 
-    async update(request: Request, response: Response){
-        try {
-
-        } catch (error) {
-
-        }
-    };
-    
-    async delete(request: Request, response: Response){
-        try {
-
-        } catch (error) {
-
+    async storeImage(request:Request, response:Response) {
+        try{
+            const { filename } = request.file;
+            return response.status(201).send(filename);
+        } catch (e) {
+            return response.status(404).send({error: true });
         }
     };
 }
